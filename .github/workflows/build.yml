@@ -32,16 +32,49 @@ jobs:
     steps:
       - uses: actions/checkout@v6
 
-      # Trova la cartella del progetto anche se è stata caricata dentro una sottocartella.
+      # Trova il progetto completo. Se nel repository mancano dei file (caricamento via web
+      # incompleto) usa uno zip del sorgente presente nel repository.
       - name: Locate project
         shell: bash
         run: |
-          cml=$(grep -rl --include=CMakeLists.txt "project(Chioccia" . | head -n 1)
-          if [ -z "$cml" ]; then echo "::error::CMakeLists.txt di Chioccia non trovato: carica i file estratti dallo zip"; exit 1; fi
-          proj=$(dirname "$cml")
+          need="CMakeLists.txt assets/fonts/LilitaOne-Regular.ttf
+            source/dsp/Biquad.h source/dsp/ColourStage.cpp source/dsp/ColourStage.h source/dsp/DelayLine.h
+            source/dsp/Detector.cpp source/dsp/Detector.h source/dsp/DspCommon.h source/dsp/EngineParameters.h
+            source/dsp/HalfBandOversampler.cpp source/dsp/HalfBandOversampler.h source/dsp/OpticalCell.cpp
+            source/dsp/OpticalCell.h source/dsp/OptoEngine.cpp source/dsp/OptoEngine.h source/dsp/Smoothers.h
+            source/gui/AdvancedPanel.cpp source/gui/AdvancedPanel.h source/gui/ChiocciaLookAndFeel.cpp
+            source/gui/ChiocciaLookAndFeel.h source/gui/Controls.cpp source/gui/Controls.h source/gui/FacePlate.cpp
+            source/gui/FacePlate.h source/gui/Layout.h source/gui/VuMeter.cpp source/gui/VuMeter.h
+            source/plugin/Parameters.cpp source/plugin/Parameters.h source/plugin/PluginEditor.cpp
+            source/plugin/PluginEditor.h source/plugin/PluginProcessor.cpp source/plugin/PluginProcessor.h
+            source/plugin/Presets.cpp source/plugin/Presets.h"
+          complete() { local ok=0; for f in $need; do [ -f "$1/$f" ] || { echo "  manca: $f"; ok=1; }; done; return $ok; }
+          candidates() { grep -rl --include=CMakeLists.txt "project(Chioccia" "$1" 2>/dev/null | while IFS= read -r f; do dirname "$f"; done || true; }
+
+          proj=""
+          while IFS= read -r c; do
+            echo "Controllo $c"; if complete "$c"; then proj="$c"; break; fi
+          done < <(candidates .)
+          if [ -z "$proj" ]; then
+            echo "File mancanti nel repository: cerco uno zip del sorgente"
+            i=0
+            while IFS= read -r -d '' z; do
+              i=$((i+1)); dest="_zip/$i"; mkdir -p "$dest"
+              echo "Estraggo: $z"
+              if command -v 7z >/dev/null; then 7z x -y -o"$dest" "$z" >/dev/null; else unzip -q -o "$z" -d "$dest"; fi
+              while IFS= read -r c; do
+                echo "Controllo $c"; if complete "$c"; then proj="$c"; break; fi
+              done < <(candidates "$dest")
+              [ -n "$proj" ] && break
+            done < <(find . -name '*.zip' -not -path './.git/*' -not -path './_zip/*' -print0)
+          fi
+          if [ -z "$proj" ]; then
+            echo "::error::Progetto incompleto: carica di nuovo le cartelle source, assets e tests (o lo zip del sorgente)"
+            exit 1
+          fi
           echo "PROJ=$proj" >> "$GITHUB_ENV"
           echo "Progetto in: $proj"
-          # I test sono facoltativi: se la cartella tests non è stata caricata si compila solo il plug-in.
+          # I test sono facoltativi: se mancano si compila solo il plug-in.
           if [ -f "$proj/tests/core/CoreTests.cpp" ] && [ -f "$proj/tests/plugin/PluginTests.cpp" ] && [ -f "$proj/tools/measure/Measure.cpp" ]; then
             echo "TESTS=ON" >> "$GITHUB_ENV"
           else
