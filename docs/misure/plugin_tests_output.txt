@@ -1,0 +1,14 @@
+Chioccia plug-in tests
+  · latency at 44100 Hz: 72 samples = 1.633 ms (all quality modes)
+  · latency at 48000 Hz: 72 samples = 1.500 ms (all quality modes)
+  · latency at 88200 Hz: 72 samples = 0.816 ms (all quality modes)
+  · latency at 96000 Hz: 72 samples = 0.750 ms (all quality modes)
+  · latency at 176400 Hz: 72 samples = 0.408 ms (all quality modes)
+  · latency at 192000 Hz: 72 samples = 0.375 ms (all quality modes)
+  · Init: GR peak 1.0 dB, output/input -1.0 dB  (two-tone 220 Hz + 2.75 kHz at -18 dBFS RMS)
+  · Vocal - Smooth Leveling: GR peak 7.3 dB, output/input -0.1 dB  (two-tone 220 Hz + 2.75 kHz at -18 dBFS RMS)
+  · Bass - Even Sustain: GR peak 9.7 dB, output/input -0.7 dB  (two-tone 220 Hz + 2.75 kHz at -18 dBFS RMS)
+  · Drums - Parallel Smash: GR peak 24.7 dB, output/input -2.2 dB  (two-tone 220 Hz + 2.75 kHz at -18 dBFS RMS)
+  · Gentle Glue: GR peak 2.7 dB, output/input -0.9 dB  (two-tone 220 Hz + 2.75 kHz at -18 dBFS RMS)
+  · Parallel Bus (100% Wet): GR peak 20.9 dB, output/input -7.7 dB  (two-tone 220 Hz + 2.75 kHz at -18 dBFS RMS)
+ALL PASSED — 140 checks, 0 failed

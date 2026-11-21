@@ -1,0 +1,22 @@
+Chioccia core tests
+  · OS x1 residual @19.2k/48k: -300.000000 dB
+  · OS x2 residual @19.2k/48k: -110.593382 dB
+  · OS x4 residual @19.2k/48k: -96.768652 dB
+  · null residual fs=44100 q=0: -300.000000 dBFS (test tones ≤ 15 kHz)
+  · null residual fs=44100 q=1: -130.962509 dBFS (test tones ≤ 15 kHz)
+  · null residual fs=44100 q=2: -123.865803 dBFS (test tones ≤ 15 kHz)
+  · null residual fs=48000 q=0: -300.000000 dBFS (test tones ≤ 15 kHz)
+  · null residual fs=48000 q=1: -133.656399 dBFS (test tones ≤ 15 kHz)
+  · null residual fs=48000 q=2: -121.671904 dBFS (test tones ≤ 15 kHz)
+  · 4x wet impulse peak 0.491410 for input 0.5 (band-limiting, not a delay error)
+  · after 0.1 s of NaN/Inf/±1e30 input: level at 8-10 s 0.000000 dB vs fresh, at 23-25 s 0.000000 dB (opto memory recovering)
+  · colour 0%: switched vs constant-quality difference -108.266836 dB, max diff step -120.617997 dBFS
+  · colour 60%: switched vs constant-quality difference -74.991827 dB, max diff step -77.318575 dBFS
+  · fs 44100: 1 kHz @ 0 VU, PR 60 → GR 8.752138 dB
+  · fs 48000: 1 kHz @ 0 VU, PR 60 → GR 8.747593 dB
+  · fs 96000: 1 kHz @ 0 VU, PR 60 → GR 8.752976 dB
+  · fs 192000: 1 kHz @ 0 VU, PR 60 → GR 8.754048 dB
+  · CPU stereo 48 kHz quality 0: 1.11 % of one core (this VM)
+  · CPU stereo 48 kHz quality 1: 1.87 % of one core (this VM)
+  · CPU stereo 48 kHz quality 2: 2.5 % of one core (this VM)
+ALL PASSED — 102 checks, 0 failed
